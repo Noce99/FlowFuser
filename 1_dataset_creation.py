@@ -9,7 +9,6 @@ from ctypes import c_int
 from tabulate import tabulate
 import shutil
 
-from nutfuser.data_creation import take_data_without_records, take_data_just_position_for_evaluation
 from nutfuser import utils
 from nutfuser import config
 from datetime import datetime
@@ -165,6 +164,7 @@ pids_to_be_killed = []
 
 
 def run_all(args, where_to_save):
+    from nutfuser.data_creation import take_data_without_records, take_data_just_position_for_evaluation
     # (1) LAUNCH CARLA SERVER
     print("Launching Carla Server...")
     os.environ["PATH"] = f"{os.environ['PATH']}:/leonardo/home/userexternal/emannocc/xdg-user-dirs-0.18/"
@@ -294,7 +294,7 @@ def run_all(args, where_to_save):
 
 if __name__ == "__main__":
     args = get_arguments()
-    egg_file_path, carlaUE4_path = check_integrity_of_carla_path(args)
+    egg_file_path, carlaUE4_path = check_integrity_of_carla_path(args.carla_path, args.end_of_egg_file)
     try:
         import carla
     except:

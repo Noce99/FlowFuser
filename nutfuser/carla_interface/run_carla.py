@@ -9,33 +9,32 @@ import psutil
 from tqdm import tqdm
 
 from nutfuser.data_creation.generate_traffic import generate_traffic
-from nutfuser.carla_interface.manual_control import launch_manual_control
 import scenario_runner
 from nutfuser import utils
 from nutfuser import config
 
-def check_integrity_of_carla_path(args):
+def check_integrity_of_carla_path(carla_path, end_of_egg_file="py3.7-linux-x86_64.egg"):
     """
     Check Integrity of the Carla Path
     """
     # (1) Check that the Carla's Path really exists
-    if not os.path.isdir(args.carla_path):
-        raise Exception(utils.color_error_string(f"The given Carla Path doesn't exist! [{args.carla_path}]"))
-    # (2) Check that the egg file is really present and it works: being able to import carla!
-    carla_pythonapi_dist_path = os.path.join(args.carla_path, "PythonAPI/carla/dist")
+    if not os.path.isdir(carla_path):
+        raise Exception(utils.color_error_string(f"The given Carla Path doesn't exist! [{carla_path}]"))
+    # (2) Check that the egg file is really present, and it works: being able to import carla!
+    carla_pythonapi_dist_path = os.path.join(carla_path, "PythonAPI/carla/dist")
     if not os.path.isdir(carla_pythonapi_dist_path):
         raise Exception(utils.color_error_string(f"The given Carla doen't contains a PythonAPI! [{carla_pythonapi_dist_path}]"))
-    egg_files = [file for file in os.listdir(carla_pythonapi_dist_path) if file[-len(args.end_of_egg_file):] == args.end_of_egg_file]
+    egg_files = [file for file in os.listdir(carla_pythonapi_dist_path) if file[-len(end_of_egg_file):] == end_of_egg_file]
     if len(egg_files) == 0:
-        raise Exception(utils.color_error_string(f"The given Carla doen't contains a \"*{args.end_of_egg_file}\" file in \"{carla_pythonapi_dist_path}\""))
+        raise Exception(utils.color_error_string(f"The given Carla doen't contains a \"*{end_of_egg_file}\" file in \"{carla_pythonapi_dist_path}\""))
     if len(egg_files) > 1:
-        raise Exception(utils.color_error_string(f"The given Carla contains to many \"*{args.end_of_egg_file}\" files in \"{carla_pythonapi_dist_path}\"\n" +
+        raise Exception(utils.color_error_string(f"The given Carla contains to many \"*{end_of_egg_file}\" files in \"{carla_pythonapi_dist_path}\"\n" +
                                                   "Set a more restrict search with the \"--end_of_egg_file\" arguments!"))
     egg_file_path = os.path.join(carla_pythonapi_dist_path, egg_files[0])
     # Now that we have a unique egg file we add it to the python path!
     sys.path.append(egg_file_path)
     # (3) Check that the CarlaUE4 executable is present
-    carlaUE4_folder = os.path.join(args.carla_path, "CarlaUE4/Binaries/Linux/")
+    carlaUE4_folder = os.path.join(carla_path, "CarlaUE4/Binaries/Linux/")
     if not os.path.isdir(carlaUE4_folder):
         raise Exception(utils.color_error_string(f"The folder in wicth I was expecting \"CarlaUE4-Linux-Shipping\" doesn't exists! [{carlaUE4_folder}]"))
     files = os.listdir(carlaUE4_folder)
@@ -177,6 +176,7 @@ def launch_scenario_runner_saifly_and_wait_till_its_up(scenario_runner_pid, carl
 
 
 def launch_manual_control_saifly(carla_server_pid, manual_control_pid):
+    from nutfuser.carla_interface.manual_control import launch_manual_control
     manual_control_is_up = multiprocessing.Event()
     manual_control_process = multiprocessing.Process(target=launch_manual_control, args=(manual_control_is_up, ))
     manual_control_process.start()

@@ -5,12 +5,19 @@ CUDA_VISIBLE_DEVICES=0,1 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=1
 torchrun --nnodes=1 --nproc_per_node=2 --max_restarts=0 --rdzv_id=1234576890 --rdzv_backend=c10d
 train.py --logdir /path/to/logdir --root_dir /path/to/dataset_root/ --id exp_000 --cpu_cores 8
 """
+import sys
+import pathlib
+sys.path.append(str(pathlib.Path(
+    __file__).parent.resolve().parent.resolve().parent.resolve().parent.resolve()))  # NutFuser Folder ex: /home/enrico/Projects/Carla/NutFuser
+
+with open("CARLA_PATH", "r") as file:
+    carla_path = file.readline()
+    from nutfuser.carla_interface.run_carla import check_integrity_of_carla_path
+    check_integrity_of_carla_path(carla_path)
 
 import argparse
 import json
 import os
-import sys
-import pathlib
 from tqdm import tqdm
 
 import numpy as np
@@ -27,8 +34,6 @@ import cv2
 from config import GlobalConfig
 from model import LidarCenterNet
 
-sys.path.append(str(pathlib.Path(
-    __file__).parent.resolve().parent.resolve().parent.resolve().parent.resolve()))  # NutFuser Folder ex: /home/enrico/Projects/Carla/NutFuser
 from nut_data import backbone_dataset
 import nutfuser.utils as utils
 import nutfuser.config as nutfuser_config

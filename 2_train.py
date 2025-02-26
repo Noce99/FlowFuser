@@ -1,3 +1,8 @@
+with open("CARLA_PATH", "r") as file:
+    carla_path = file.readline()
+    from nutfuser.carla_interface.run_carla import check_integrity_of_carla_path
+    check_integrity_of_carla_path(carla_path)
+
 import argparse
 import os
 import pathlib
@@ -179,7 +184,7 @@ if __name__ == "__main__":
     shell_train_path = os.path.join(nutfuser_path, "nutfuser", "neural_networks", "tfpp", "shell_train.sh")
     train_script_path = os.path.join(nutfuser_path, "nutfuser", "neural_networks", "tfpp", "train.py")
     train_logs_folder = os.path.join(nutfuser_path, "train_logs")
-    venv_to_source_path = os.path.join(nutfuser_path, "bin", "activate")
+    venv_to_source_path = os.path.join(nutfuser_path, "venv_3_7", "bin", "activate")
 
     if not os.path.isdir(train_logs_folder):
         os.mkdir(train_logs_folder)
@@ -296,7 +301,10 @@ if __name__ == "__main__":
     train_process = psutil.Process(train_pid)
     try:
         while True:
-            if train_process.status() in [psutil.STATUS_ZOMBIE, psutil.STATUS_STOPPED]:
+            try:
+                if train_process.status() in [psutil.STATUS_ZOMBIE, psutil.STATUS_STOPPED]:
+                    break
+            except FileNotFoundError:
                 break
     except KeyboardInterrupt:
         pass

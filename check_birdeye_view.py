@@ -240,7 +240,7 @@ if __name__ == "__main__":
         for key in config.TOWN_DICT:
             error += f"{key} -> {config.TOWN_DICT[key]}\n"
         raise Exception(utils.color_error_string(error))
-    egg_file_path, carlaUE4_path = check_integrity_of_carla_path(args)
+    egg_file_path, carlaUE4_path = check_integrity_of_carla_path(args.carla_path, args.end_of_egg_file)
     try:
         import carla
     except:

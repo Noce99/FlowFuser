@@ -15,7 +15,7 @@ You can try if Carla is working with the following command:
 
     cd FlowFuser
 
-    python3.7 -m venv ./
+    python3.7 -m venv ./venv_3_7
 
     source bin/activate
 
@@ -38,11 +38,9 @@ After having created enough dataset folders:
 
 1. Backbone Training
 
-
     python 2_train.py --just_backbone --use_bev_semantic --use_depth
 
 2. Full Network Training
-
 
     python 2_train.py --use_bev_semantic --use_depth --weights_path <path_to_model_****.pth>
 

@@ -16,9 +16,6 @@ from types import ModuleType
 from nutfuser.raft_flow_colormap import flow_to_image
 import nutfuser.config as config
 from nutfuser.neural_networks.tfpp.config import GlobalConfig
-from nutfuser.neural_networks.tfpp.model import LidarCenterNet
-from carla_birdeye_view.colors import RGB
-from carla_birdeye_view import RGB_BY_MASK, BirdViewMasks
 
 
 def color_error_string(string):
@@ -630,6 +627,7 @@ def lidar_to_histogram_features(lidar):
 
 
 def load_model_given_weights(weights_path):
+    from nutfuser.neural_networks.tfpp.model import LidarCenterNet
     try:
         weights = torch.load(weights_path)
     except Exception as e:
@@ -1021,6 +1019,7 @@ def set_image_pixel_color(image, value, color):
 
 
 def color_semantic(my_image):
+    from carla_birdeye_view.colors import RGB
     my_image = set_image_pixel_color(my_image, 0, (0, 0, 0))  # UNKNOWN
     my_image = set_image_pixel_color(my_image, 1, RGB.DIM_GRAY)  # ROAD
     my_image = set_image_pixel_color(my_image, 2, RGB.CHAMELEON)  # TERRAIN WHERE THE CAR SHOULD NOT GO
@@ -1033,6 +1032,7 @@ def color_semantic(my_image):
 
 
 def color_semantic_2(my_image):
+    from carla_birdeye_view import RGB_BY_MASK, BirdViewMasks
     for i in range(10):
         my_image = set_image_pixel_color(my_image, BirdViewMasks(i), RGB_BY_MASK[BirdViewMasks(i)])
     return my_image

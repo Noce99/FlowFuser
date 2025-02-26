@@ -179,7 +179,7 @@ def run_all(args, route_path, weights_path, output_dir_path):
 
 if __name__ == "__main__":
     args = get_arguments()
-    egg_file_path, carlaUE4_path = check_integrity_of_carla_path(args)
+    egg_file_path, carlaUE4_path = check_integrity_of_carla_path(args.carla_path, args.end_of_egg_file)
     try:
         import carla
     except:
